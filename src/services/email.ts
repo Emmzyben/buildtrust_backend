@@ -23,7 +23,7 @@ const sendExternalEmail = async (toEmail: string, subject: string, message: stri
       }
     );
 
-    const result = await response.json();
+    const result = await response.json() as { status?: string; message?: string };
 
     if (
       result.status === "success" ||
@@ -51,19 +51,21 @@ export const sendVerificationEmail = async (
 ) => {
   const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email?token=${verificationToken}`;
 
-  const htmlMessage = `
-      <h2>Welcome to BuildTrust Africa</h2>
-      <p>Please verify your email by clicking the link below:</p>
-      <a href="${verificationUrl}">Verify My Email</a>
-      <br><br>
-      If the button doesn't work, use this link:<br>
-      ${verificationUrl}
+  const message = `
+Welcome to BuildTrust Africa
+
+Please verify your email by clicking the link below:
+${verificationUrl}
+
+If the link doesn't work, copy and paste it into your browser.
+
+Thank you!
   `;
 
   return await sendExternalEmail(
     toEmail,
     "Verify Your Email - BuildTrust Africa",
-    htmlMessage
+    message
   );
 };
 
@@ -77,18 +79,22 @@ export const sendPasswordResetEmail = async (
 ) => {
   const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${resetToken}`;
 
-  const htmlMessage = `
-      <h2>Password Reset Request</h2>
-      <p>You requested a password reset. Click the link below:</p>
-      <a href="${resetUrl}">Reset Password</a>
-      <br><br>
-      If the button doesn't work, use this link:<br>
-      ${resetUrl}
+  const message = `
+Password Reset Request
+
+You requested a password reset. Click the link below:
+${resetUrl}
+
+If the link doesn't work, copy and paste it into your browser.
+
+If you didn't request this, please ignore this email.
+
+Thank you!
   `;
 
   return await sendExternalEmail(
     toEmail,
     "Reset Your Password - BuildTrust Africa",
-    htmlMessage
+    message
   );
 };

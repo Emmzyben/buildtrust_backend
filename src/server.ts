@@ -24,7 +24,7 @@ initializeDatabase().catch(console.error);
 app.use('/api/auth', authRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'BuildTrust API is running' });
 });
 

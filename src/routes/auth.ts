@@ -22,8 +22,8 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
-// Sign up 
-router.post('/signup', async (req, res) => {
+// Sign up
+router.post('/signup', async (req, res): Promise<void> => {
   try {
     const validatedData = signupSchema.parse(req.body);
     const { email, password, name, role } = validatedData;
@@ -95,7 +95,7 @@ router.post('/signup', async (req, res) => {
 });
 
 // Sign in
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res): Promise<void> => {
   try {
     const validatedData = loginSchema.parse(req.body);
     const { email, password } = validatedData;
@@ -165,7 +165,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user
-router.get('/me', async (req, res) => {
+router.get('/me', async (req, res): Promise<void> => {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -218,7 +218,7 @@ router.get('/me', async (req, res) => {
 });
 
 // Sign out
-router.post('/logout', async (req, res) => {
+router.post('/logout', async (req, res): Promise<void> => {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -236,7 +236,7 @@ router.post('/logout', async (req, res) => {
 });
 
 // Verify email
-router.post('/verify-email', async (req, res) => {
+router.post('/verify-email', async (req, res): Promise<void> => {
   try {
     const { token } = req.body;
 
@@ -310,7 +310,7 @@ router.post('/verify-email', async (req, res) => {
 });
 
 // Resend verification email
-router.post('/resend-verification', async (req, res) => {
+router.post('/resend-verification', async (req, res): Promise<void> => {
   try {
     const { email } = req.body;
 
@@ -365,7 +365,7 @@ router.post('/resend-verification', async (req, res) => {
 });
 
 // Forgot password
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', async (req, res): Promise<void> => {
   try {
     const { email } = req.body;
 
@@ -418,7 +418,7 @@ router.post('/forgot-password', async (req, res) => {
 });
 
 // Reset password
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password', async (req, res): Promise<void> => {
   try {
     const { token, password } = req.body;
 
