@@ -2,11 +2,12 @@
   "name": "buildtrust-backend",
   "version": "1.0.0",
   "description": "BuildTrust backend API with Node.js and MySQL",
-  "main": "server.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js",
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "build": "echo 'No build step required for this project'",
     "lint": "eslint src --ext .js"
   },
   "keywords": [],
