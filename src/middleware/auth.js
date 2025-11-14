@@ -1,16 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export interface AuthRequest extends Request {
-  userId?: number;
-  userEmail?: string;
-}
-
 export const authenticateToken = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-): void => {
+  req,
+  res,
+  next
+) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
@@ -23,7 +17,7 @@ export const authenticateToken = (
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || 'your_secret_key'
-    ) as { userId: number; email: string };
+    );
 
     req.userId = decoded.userId;
     req.userEmail = decoded.email;
@@ -33,5 +27,3 @@ export const authenticateToken = (
     return;
   }
 };
-
-

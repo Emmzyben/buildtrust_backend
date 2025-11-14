@@ -23,7 +23,7 @@ const loginSchema = z.object({
 });
 
 // Sign up
-router.post('/signup', async (req, res): Promise<void> => {
+router.post('/signup', async (req, res) => {
   try {
     const validatedData = signupSchema.parse(req.body);
     const { email, password, name, role } = validatedData;
@@ -47,7 +47,7 @@ router.post('/signup', async (req, res): Promise<void> => {
     const [result] = await pool.query(
       'INSERT INTO users (email, password, name, role, email_verified) VALUES (?, ?, ?, ?, FALSE)',
       [email, hashedPassword, name || null, role || 'client']
-    ) as any;
+    );
 
     const userId = result.insertId;
 
@@ -95,7 +95,7 @@ router.post('/signup', async (req, res): Promise<void> => {
 });
 
 // Sign in
-router.post('/login', async (req, res): Promise<void> => {
+router.post('/login', async (req, res) => {
   try {
     const validatedData = loginSchema.parse(req.body);
     const { email, password } = validatedData;
@@ -104,7 +104,7 @@ router.post('/login', async (req, res): Promise<void> => {
     const [users] = await pool.query(
       'SELECT id, email, password, name, role FROM users WHERE email = ?',
       [email]
-    ) as any[];
+    );
 
     if (!Array.isArray(users) || users.length === 0) {
       return res.status(401).json({
@@ -165,7 +165,7 @@ router.post('/login', async (req, res): Promise<void> => {
 });
 
 // Get current user
-router.get('/me', async (req, res): Promise<void> => {
+router.get('/me', async (req, res) => {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -177,13 +177,13 @@ router.get('/me', async (req, res): Promise<void> => {
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET || 'your_secret_key'
-    ) as { userId: number; email: string };
+    );
 
     // Verify session exists and is valid
     const [sessions] = await pool.query(
       'SELECT * FROM sessions WHERE user_id = ? AND token = ? AND expires_at > NOW()',
       [decoded.userId, token]
-    ) as any[];
+    );
 
     if (!Array.isArray(sessions) || sessions.length === 0) {
       return res.status(401).json({ error: 'Invalid or expired session' });
@@ -193,7 +193,7 @@ router.get('/me', async (req, res): Promise<void> => {
     const [users] = await pool.query(
       'SELECT id, email, name, role, created_at, email_verified FROM users WHERE id = ?',
       [decoded.userId]
-    ) as any[];
+    );
 
     if (!Array.isArray(users) || users.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -218,7 +218,7 @@ router.get('/me', async (req, res): Promise<void> => {
 });
 
 // Sign out
-router.post('/logout', async (req, res): Promise<void> => {
+router.post('/logout', async (req, res) => {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -236,7 +236,7 @@ router.post('/logout', async (req, res): Promise<void> => {
 });
 
 // Verify email
-router.post('/verify-email', async (req, res): Promise<void> => {
+router.post('/verify-email', async (req, res) => {
   try {
     const { token } = req.body;
 
@@ -248,7 +248,7 @@ router.post('/verify-email', async (req, res): Promise<void> => {
     const [tokens] = await pool.query(
       'SELECT * FROM email_verification_tokens WHERE token = ? AND used = FALSE AND expires_at > NOW()',
       [token]
-    ) as any[];
+    );
 
     if (!Array.isArray(tokens) || tokens.length === 0) {
       return res.status(400).json({ error: 'Invalid or expired verification token' });
@@ -272,7 +272,7 @@ router.post('/verify-email', async (req, res): Promise<void> => {
     const [updatedUsers] = await pool.query(
       'SELECT id, email, name, role FROM users WHERE id = ?',
       [verificationToken.user_id]
-    ) as any[];
+    );
 
     const updatedUser = updatedUsers[0];
 
@@ -310,7 +310,7 @@ router.post('/verify-email', async (req, res): Promise<void> => {
 });
 
 // Resend verification email
-router.post('/resend-verification', async (req, res): Promise<void> => {
+router.post('/resend-verification', async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -322,7 +322,7 @@ router.post('/resend-verification', async (req, res): Promise<void> => {
     const [users] = await pool.query(
       'SELECT id, email_verified FROM users WHERE email = ?',
       [email]
-    ) as any[];
+    );
 
     if (!Array.isArray(users) || users.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -365,7 +365,7 @@ router.post('/resend-verification', async (req, res): Promise<void> => {
 });
 
 // Forgot password
-router.post('/forgot-password', async (req, res): Promise<void> => {
+router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -377,7 +377,7 @@ router.post('/forgot-password', async (req, res): Promise<void> => {
     const [users] = await pool.query(
       'SELECT id FROM users WHERE email = ?',
       [email]
-    ) as any[];
+    );
 
     if (!Array.isArray(users) || users.length === 0) {
       // Don't reveal if email exists or not for security
@@ -418,7 +418,7 @@ router.post('/forgot-password', async (req, res): Promise<void> => {
 });
 
 // Reset password
-router.post('/reset-password', async (req, res): Promise<void> => {
+router.post('/reset-password', async (req, res) => {
   try {
     const { token, password } = req.body;
 
@@ -443,7 +443,7 @@ router.post('/reset-password', async (req, res): Promise<void> => {
     const [tokens] = await pool.query(
       'SELECT * FROM password_reset_tokens WHERE token = ? AND used = FALSE AND expires_at > NOW()',
       [token]
-    ) as any[];
+    );
 
     if (!Array.isArray(tokens) || tokens.length === 0) {
       return res.status(400).json({ error: 'Invalid or expired reset token' });
@@ -474,5 +474,3 @@ router.post('/reset-password', async (req, res): Promise<void> => {
 });
 
 export default router;
-
-

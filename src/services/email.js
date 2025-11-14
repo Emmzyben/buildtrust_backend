@@ -6,7 +6,7 @@ export const generateVerificationToken = () => {
 };
 
 // Reusable function to send emails through external PHP API
-const sendExternalEmail = async (toEmail: string, subject: string, message: string) => {
+const sendExternalEmail = async (toEmail, subject, message) => {
   try {
     const response = await fetch(
       "https://gitaalliedtech.com/clocklyApp/clockly_email.php",
@@ -23,7 +23,7 @@ const sendExternalEmail = async (toEmail: string, subject: string, message: stri
       }
     );
 
-    const result = await response.json() as { status?: string; message?: string };
+    const result = await response.json();
 
     if (
       result.status === "success" ||
@@ -46,8 +46,8 @@ const sendExternalEmail = async (toEmail: string, subject: string, message: stri
 // ------------------------------------------------------------
 
 export const sendVerificationEmail = async (
-  toEmail: string,
-  verificationToken: string
+  toEmail,
+  verificationToken
 ) => {
   const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email?token=${verificationToken}`;
 
@@ -74,8 +74,8 @@ Thank you!
 // ------------------------------------------------------------
 
 export const sendPasswordResetEmail = async (
-  toEmail: string,
-  resetToken: string
+  toEmail,
+  resetToken
 ) => {
   const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${resetToken}`;
 

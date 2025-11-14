@@ -66,7 +66,7 @@ export async function initializeDatabase() {
       `);
     } catch (error) {
       // Column might already exist, ignore error
-      if (!(error as Error).message.includes('Duplicate column name')) {
+      if (!(error.message.includes('Duplicate column name'))) {
         throw error;
       }
     }
@@ -77,5 +77,3 @@ export async function initializeDatabase() {
     throw error;
   }
 }
-
-
